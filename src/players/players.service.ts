@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreatePlayerDto} from './dtos/create-player.dto';
+import { UpdatePlayerDto} from './dtos/update-player.dto';
 import { Player } from './interfaces/player.interface';
 import {v4 as uuidv4} from 'uuid'
 
@@ -11,11 +12,8 @@ export class PlayersService {
 
     private readonly logger = new Logger(PlayersService.name)
 
-    async createUpdatePlayer(createPlayerDto: CreatePlayerDto) : Promise<void> {
-        
-
-        this.create(createPlayerDto)
-    
+    async createPlayer(createPlayerDto: CreatePlayerDto) : Promise<void> {
+        this.create(createPlayerDto)    
     }
 
     async getAll() : Promise<Player[]>{
@@ -36,6 +34,16 @@ export class PlayersService {
         }
         this.logger.log(`createPlayerDto: ${JSON.stringify(player)}`)
         this.players.push(player)
+    }
+
+    update(updatePlayerDto: UpdatePlayerDto, _id: string) : void {
+        const { name } = updatePlayerDto
+        
+        const playerFound = this.players.find(player => player._id === _id)
+        if(playerFound){
+            playerFound.name = name
+        }
+
     }
 
 }

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreatePlayerDto} from './dtos/create-player.dto';
 import { UpdatePlayerDto} from './dtos/update-player.dto';
 import { Player } from './interfaces/player.interface';
@@ -18,6 +18,15 @@ export class PlayersService {
 
     async getAll() : Promise<Player[]>{
         return await this.players
+    }
+
+    async getOne(_id: string) : Promise<Player>{
+
+        const player = await this.players.find(player => player._id === _id)
+        if(!player){
+            throw new NotFoundException(`Player with _id: ${_id} not found.`)
+        }
+        return player
     }
 
     private create(createPlayerDto: CreatePlayerDto) : void {
@@ -45,5 +54,16 @@ export class PlayersService {
         }
 
     }
+
+    async delete(_id: string) : Promise<void> {
+        const playerFound = await this.players.find(player => player._id === _id)
+        if(!playerFound){
+            throw new NotFoundException(`Player with _id: ${_id} not found.`)
+        }
+
+        this.players = this.players.filter(player => player._id !== playerFound._id)
+    }
+
+    
 
 }

@@ -3,12 +3,14 @@ import { CreatePlayerDto} from './dtos/create-player.dto';
 import { UpdatePlayerDto} from './dtos/update-player.dto';
 import { Player } from './interfaces/player.interface';
 import {v4 as uuidv4} from 'uuid'
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose'
 
 
 @Injectable()
 export class PlayersService {
 
-    private players: Player[] = [];
+    constructor(@InjectModel('Player') private readonly playerModel: Model<Player>) {}
 
     private readonly logger = new Logger(PlayersService.name)
 
@@ -17,51 +19,33 @@ export class PlayersService {
     }
 
     async getAll() : Promise<Player[]>{
-        return await this.players
+        return await this.playerModel.find().exec()
     }
 
     async getOne(_id: string) : Promise<Player>{
-
-        const player = await this.players.find(player => player._id === _id)
+        const player = await this.playerModel.findOne({_id}).exec()
         if(!player){
             throw new NotFoundException(`Player with _id: ${_id} not found.`)
         }
         return player
     }
 
-    private create(createPlayerDto: CreatePlayerDto) : void {
-        const { name, phoneNumber, email } = createPlayerDto
+    private async create(createPlayerDto: CreatePlayerDto) : Promise<Player> {
+        const newPlayer = new this.playerModel(createPlayerDto)
 
-        const player: Player = {
-            _id: uuidv4(),
-            name,
-            email,
-            phoneNumber,
-            ranking: 'A',
-            rankingPosition: 1,
-            profilePictureUrl: 'www.google.com.br/picture123.jpg'
-        }
-        this.logger.log(`createPlayerDto: ${JSON.stringify(player)}`)
-        this.players.push(player)
+        return await newPlayer.save()
     }
 
-    update(updatePlayerDto: UpdatePlayerDto, _id: string) : void {
-        const { name } = updatePlayerDto
+    async update(updatePlayerDto: UpdatePlayerDto, _id: string) : Promise<Player> {
+        this.playerModel.updateOne({ _id }, {$set: updatePlayerDto }).exec()
         
-        const playerFound = this.players.find(player => player._id === _id)
-        if(playerFound){
-            playerFound.name = name
-        }
-
+        return this.getOne(_id)
     }
 
-    async delete(_id: string) : Promise<void> {
-        const playerFound = await this.players.find(player => player._id === _id)
-        if(!playerFound){
-            throw new NotFoundException(`Player with _id: ${_id} not found.`)
+    async delete(_id: string) : Promise<any> {
+        if(this.playerModel.remove({_id}).exec()){
+            return 'true'
         }
-
-        this.players = this.players.filter(player => player._id !== playerFound._id)
     }
 
     

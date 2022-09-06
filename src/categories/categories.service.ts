@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Categorie } from './interfaces/categorie.interface';
 import { Model } from 'mongoose'
@@ -28,4 +28,17 @@ export class CategoriesService {
     async getAll() : Promise<Array<Categorie>>{
         return await this.categorieModel.find().exec()
     }
+
+    async getOne(_id: string) : Promise<Categorie> {
+        const categorie = await this.categorieModel.findOne({_id}).exec() 
+        if(!categorie){
+            throw new NotFoundException(`id: ${_id} inválido. Nenhuma categoria foi encontrada!`)
+        }
+
+        return categorie
+    }
+
+
+
+
 }

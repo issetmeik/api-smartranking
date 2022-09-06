@@ -14,4 +14,4 @@ export const CategorieSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Player"
     }]
-}, {timestamps: true, collection: 'categiries'})
+}, {timestamps: true, collection: 'categories'})

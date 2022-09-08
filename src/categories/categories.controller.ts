@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategorieDto } from './dtos/create-categorie.dto';
+import { UpdateCategorieDto } from './dtos/update-categorie.dto';
 import { Categorie } from './interfaces/categorie.interface';
 
 @Controller('api/v1/categories')
@@ -23,4 +24,22 @@ export class CategoriesController {
     async findOne(@Param('_id') _id: string) : Promise<Categorie> {
         return await this.categoriesService.getOne(_id)
     }
+
+    @Delete(':_id')
+    async delete(@Param('_id') _id: string) : Promise<void> {
+        return await this.categoriesService.delete(_id)
+    }
+
+    @Patch(':_id')
+    @UsePipes(ValidationPipe)
+    async update(@Body() updateCategorieDto: UpdateCategorieDto, @Param('_id') _id: string) : Promise<void> {
+        return await this.categoriesService.update(updateCategorieDto, _id)
+    }
+
+    @Post(':categorie/players/:_idPlayer')
+    async linkCategoriePlayer(@Param() params: string[]) : Promise<void> {
+        return await this.categoriesService.linkCategoriePlayer(params)    
+    }
+
+    
 }

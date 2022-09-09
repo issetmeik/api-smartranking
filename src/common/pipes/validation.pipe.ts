@@ -1,5 +1,5 @@
 import { ArgumentMetadata, BadRequestException, PipeTransform } from "@nestjs/common";
-import { PlayersService } from '../players.service';
+import { PlayersService } from '../../players/players.service';
 
 export class PlayersValidationPipe implements PipeTransform{
     constructor(private readonly playersService: PlayersService) {}

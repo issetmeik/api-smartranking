@@ -20,9 +20,9 @@ export class CategoriesController {
         return await this.categoriesService.getAll()
     }
 
-    @Get(':_id')
-    async findOne(@Param('_id') _id: string) : Promise<Categorie> {
-        return await this.categoriesService.getOne(_id)
+    @Get(':categorie')
+    async findOne(@Param('categorie') categorie: string) : Promise<Categorie> {
+        return await this.categoriesService.getOne(categorie)
     }
 
     @Delete(':_id')

@@ -11,7 +11,7 @@ export class UpdateCategorieDto {
     @IsArray()
     @IsOptional()
     @ArrayMinSize(1)
-    events: Array<Event>
+    events: Array<Event>;
 
 
 

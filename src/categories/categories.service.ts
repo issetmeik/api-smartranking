@@ -31,13 +31,13 @@ export class CategoriesService {
         return await this.categorieModel.find().populate("players").exec()
     }
 
-    async getOne(_id: string) : Promise<Categorie> {
-        const categorie = await this.categorieModel.findOne({_id}).exec() 
-        if(!categorie){
-            throw new NotFoundException(`id: ${_id} inválido. Nenhuma categoria foi encontrada!`)
+    async getOne(categorie: string) : Promise<Categorie> {
+        const categorieFound = await this.categorieModel.findOne({categorie}).exec() 
+        if(!categorieFound){
+            throw new NotFoundException(`Categoria: ${categorie} inválida. Nenhuma categoria foi encontrada!`)
         }
 
-        return categorie
+        return categorieFound
     }
 
     async delete(_id: string) : Promise<void> {

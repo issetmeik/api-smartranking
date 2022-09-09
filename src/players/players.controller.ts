@@ -3,7 +3,7 @@ import { CreatePlayerDto } from './dtos/create-player.dto';
 import { UpdatePlayerDto } from './dtos/update-player.dto';
 import { PlayersService } from './players.service';
 import { Player } from './interfaces/player.interface';
-import { PlayersValidationPipe } from './pipes/players-validation.pipe';
+import { PlayersValidationPipe } from '../common/pipes/validation.pipe';
 
 @Controller('api/v1/players')
 export class PlayersController {

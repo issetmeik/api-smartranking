@@ -13,6 +13,6 @@ export class CreateCategorieDto{
 
     @IsArray()
     @ArrayMinSize(1)
-    events: Array<Event>
+    events: Array<Event>;
 
 }

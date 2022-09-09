@@ -36,7 +36,7 @@ export class CategoriesController {
         return await this.categoriesService.update(updateCategorieDto, _id)
     }
 
-    @Post(':categorie/players/:_idPlayer')
+    @Post(':categorie/players/:playerId')
     async linkCategoriePlayer(@Param() params: string[]) : Promise<void> {
         return await this.categoriesService.linkCategoriePlayer(params)    
     }

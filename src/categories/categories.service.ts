@@ -4,12 +4,13 @@ import { Categorie } from './interfaces/categorie.interface';
 import { Model } from 'mongoose'
 import { CreateCategorieDto } from './dtos/create-categorie.dto';
 import { UpdateCategorieDto } from './dtos/update-categorie.dto';
-import { PlayersService } from 'src/players/players.service';
+import { PlayersService } from '../players/players.service';
 
 @Injectable()
 export class CategoriesService {
 
-    constructor(@InjectModel('Categorie') private readonly categorieModel: Model<Categorie>){}
+    constructor(@InjectModel('Categorie') private readonly categorieModel: Model<Categorie>,
+    private readonly playersService: PlayersService){}
 
     async create(createCategorieDto: CreateCategorieDto) : Promise<Categorie>{
 
@@ -27,7 +28,7 @@ export class CategoriesService {
     }
 
     async getAll() : Promise<Array<Categorie>>{
-        return await this.categorieModel.find().exec()
+        return await this.categorieModel.find().populate("players").exec()
     }
 
     async getOne(_id: string) : Promise<Categorie> {
@@ -59,17 +60,25 @@ export class CategoriesService {
 
     async linkCategoriePlayer(params: string[]) : Promise<void> {
         const categorie = params['categorie']
-        const idPlayer = params['idPlayer']
+        const playerId = params['playerId']
+
+        await this.playersService.getOne(playerId)
 
         const categorieFound = await this.categorieModel.findOne({categorie}).exec()
+
+        const categoriePlayer = await this.categorieModel.find({categorie}).where('players').in(playerId)
 
         if(!categorieFound){
             throw new NotFoundException(`categoria: ${categorie} não cadastrada!`)
         }
 
-        //const playerFound = await
+        if(categoriePlayer.length > 0){
+            throw new BadRequestException(`Jogador: ${playerId} já está cadastrado na Categoria ${categorie}.`)
+        }
 
-        categorieFound.players.push(idPlayer)
+        
+
+        categorieFound.players.push(playerId)
 
         await this.categorieModel.findOneAndUpdate({categorie}, {$set: categorieFound}).exec()
 

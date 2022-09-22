@@ -5,11 +5,13 @@ import { CategoriesController } from './categories.controller';
 import { CategoriesService } from './categories.service';
 import { CategorieSchema } from './interfaces/categorie.schema';
 
-
 @Module({
-  imports: [MongooseModule.forFeature([{name: 'Categorie', schema: CategorieSchema}]),
-            PlayersModule],
+  imports: [
+    MongooseModule.forFeature([{ name: 'Categorie', schema: CategorieSchema }]),
+    PlayersModule,
+  ],
   controllers: [CategoriesController],
-  providers: [CategoriesService]
+  providers: [CategoriesService],
+  exports: [CategoriesService],
 })
 export class CategoriesModule {}
